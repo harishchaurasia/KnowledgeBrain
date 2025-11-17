@@ -1,1 +1,5 @@
 venv/
+rag-backend/app/__pycache__/
+rag-backend/data/
+rag-backend/data/docs/
+rag-backend/data/audio/
