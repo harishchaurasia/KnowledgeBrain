@@ -3,6 +3,11 @@ import fitz
 import re
 from typing import List
 
+#pipeline imports for ingestion
+from app.embeddings import embed_chunks
+from app.vectorstore import add_embeddings
+
+
 def extract_text_from_pdf(path: str) -> str:
     """
     Extracts raw text from a PDF file.
@@ -62,3 +67,27 @@ def chunk_text(text: str, max_chunk_size: int = 600, overlap: int = 100) -> List
         chunks.append(current_chunk.strip())
 
     return chunks
+
+#Ingestion pipeline for PDF files
+def ingest_pdf_file(path: str):
+    """
+    Full ingestion pipeline for PDF:
+    - extract text
+    - chunk
+    - embed
+    - store in FAISS
+    """
+
+    text = extract_text_from_pdf(path)
+    chunks = chunk_text(text)
+    embeddings = embed_chunks(chunks)
+    metadata = {"source": path}
+    add_embeddings(chunks, embeddings, metadata)
+    
+    return {
+        "chunks_created": len(chunks),
+        "source": path
+    }
+
+
+

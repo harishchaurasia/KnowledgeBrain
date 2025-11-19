@@ -31,7 +31,14 @@ async def ingest_pdf(file: UploadFile = File(...)):
 
     with open(file_path, "wb") as f:
         f.write(await file.read())
-    return {"message": "PDF file uploaded successfully.", "filename": file.filename}
+
+    info = ingest_pdf_file(file_path)
+    
+    return {
+        "message": "PDF ingested successfully",
+        "filename": file.filename,
+        "chunks_created": info["chunks_created"]
+    }
 
 
 @app.get("/ingest/docx")
