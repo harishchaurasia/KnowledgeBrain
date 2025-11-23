@@ -2,6 +2,7 @@
 
 #subprocess is used to run the LLM model as we invoke ithe model via the CLI. It allows us to interact with the model as if it were a process.
 import subprocess
+from app.query import retrieve_relevant_chunks
 
 
 def build_prompt(question: str, chunks: list[dict]) -> str:
@@ -38,3 +39,43 @@ def build_prompt(question: str, chunks: list[dict]) -> str:
     
     return prompt
 
+
+
+def call_llm(prompt: str) -> str:
+    """
+    Calls the LLM with the given prompt and returns the response.
+    """
+
+    ## subprocess runs: echo prompt | ollama run model
+    result = subprocess.run(
+        ["ollama", "run", model],
+        input=prompt.encode("utf-8"),
+        capture_output=True
+    )
+
+    # return result.stdout.decode("utf-8").strip()
+    return result.stdout.decode("utf-8")
+
+
+def answer_question(question: str, top_k:int=3) -> dict:
+        """
+    Full LLM answering pipeline:
+    - retrieve relevant chunks
+    - build RAG prompt
+    - call LLM
+    - return answer + sources
+    """
+
+    #Retrieving chunks
+    chunks = retrieve_relevant_chunks(question, top_k)
+
+    #Building grounded prompt
+    prompt = build_prompt(question, chunks)
+
+    #Getting LLM answer
+    answer = call_llm(prompt)
+
+    return {
+        "answer": answer,
+        "sources": chunks
+    }

@@ -3,6 +3,7 @@
 from fastapi import FastAPI, File, UploadFile
 from app.ingestion import extract_text_from_pdf
 from app.query import retrieve_relevant_chunks
+from app.llm import answer_question
 
 
 
@@ -86,10 +87,12 @@ async def ingest_audio(file: UploadFile = File(...)):
 async def ask_question(question: str):
 
     #Retrieving top-k chunks relevant to the question
-    retrieved = retrieve_relevant_chunks(question, top_k=3)
+    # retrieved = retrieve_relevant_chunks(question, top_k=3)
+    result = answer_question(question, top_k=3)
     return {
         "question": question,
-        "retrieved_chunks": retrieved
+        "answer": result["answer"],
+        "sources": result["sources"]
     }
 
 @app.post("/transcribe")
