@@ -4,6 +4,8 @@ from fastapi import FastAPI, File, UploadFile
 from app.ingestion import extract_text_from_pdf
 from app.query import retrieve_relevant_chunks
 from app.llm import answer_question
+from app.stt import transcribe_audio
+from app.llm import answer_question
 
 
 
@@ -97,4 +99,21 @@ async def ask_question(question: str):
 
 @app.post("/transcribe")
 async def transcribe_audio(file: UploadFile = File(...)):
-    return {"message": "Audio transcription will be added later"}
+
+    file_path = f"data/audio/{file.filename}"
+
+    #We save the uploaded file to the filesystem temporarily
+    with open(file_path, "wb") as f:
+        f.write(await file.read())
+
+    #transcribe the audio file
+    audioText = transcribe_audio(file_path)
+
+    #now we send text to the RAG pipeline
+    result = answer_question(audioText, top_k=3)
+
+    return {
+        "transcript": audioText,
+        "answer": result["answer"],
+        "sources": result["sources"]
+    }
