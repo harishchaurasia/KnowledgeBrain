@@ -4,3 +4,17 @@ rag-backend/data/
 rag-backend/data/docs/
 rag-backend/data/audio/
 rag-backend/.DS_Store
+
+rag-frontend/node_modules/
+rag-frontend/.next/
+rag-frontend/build/
+rag-frontend/out/
+
+rag-frontend/package-lock.json
+
+rag-frontend/tsconfig.json
+rag-frontend/tsconfig.app.json
+rag-frontend/tsconfig.base.json
+rag-frontend/tsconfig.node.json
+rag-frontend/tsconfig.spec.json
+
