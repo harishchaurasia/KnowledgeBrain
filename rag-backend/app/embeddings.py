@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer
 import numpy as np
+from typing import List
 
 #Loading the embedding model once at startup.
 # MiniLM is small, fast, and perfect for local dev.

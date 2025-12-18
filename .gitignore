@@ -18,3 +18,10 @@ rag-frontend/tsconfig.base.json
 rag-frontend/tsconfig.node.json
 rag-frontend/tsconfig.spec.json
 
+.zsh_history
+package-lock.json
+rag-backend/.zsh_history
+rag-frontend/.zsh_history
+rag-backend/package-lock.json
+rag-backend/venv311/
+rag-frontend/.zsh_history

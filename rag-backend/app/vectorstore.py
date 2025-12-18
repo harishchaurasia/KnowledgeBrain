@@ -41,17 +41,34 @@ def search(query_embedding: np.ndarray, top_k: int = 3):
     """
     Returns top_k similar chunks from docstore based on vector similarity.
     """
+    #  FAISS expects float32 and shape (n_queries, dim)
+    query_embedding = np.asarray(query_embedding, dtype="float32")
+    if query_embedding.ndim == 1:
+        query_embedding = query_embedding.reshape(1, -1)
+
+    # If nothing has been added yet, return empty
+    if index.ntotal == 0:
+        return []
+
+    # Making sure we never ask FAISS for more neighbors than it has
+    top_k = min(top_k, index.ntotal)
 
     #querying the index
     #Query FAISS (D = distances, I = indices)
     D, I = index.search(query_embedding, top_k)
-
-    results = []
-
-    # I is a 2D array; we want the first row
     
-    for i in I[0]: 
-        if i < len(docstore):
+    results = []
+    
+    # I is a 2D array; we want the first row
+    for i in I[0]:
+        # FAISS can return -1 when it can't find a valid neighbor
+        if i == -1:
+            continue
+        if 0 <= i < len(docstore):
             results.append(docstore[i])
 
+    #results is a list of dictionaries with text and metadata
     return results
+
+    print("FAISS ntotal:", index.ntotal, "docstore:", len(docstore))
+

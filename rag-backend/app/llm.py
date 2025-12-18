@@ -6,7 +6,7 @@ from app.query import retrieve_relevant_chunks
 
 
 def build_prompt(question: str, chunks: list[dict]) -> str:
-        """
+    """
     Builds a grounded prompt including:
     - retrieved context chunks
     - citation numbers
@@ -14,7 +14,7 @@ def build_prompt(question: str, chunks: list[dict]) -> str:
     - strict grounding instructions
     """
 
-    contextBlock = ""
+    context_block = ""
 
     for idx, item in enumerate(chunks):
         chunk_text = item["text"]
@@ -41,7 +41,7 @@ def build_prompt(question: str, chunks: list[dict]) -> str:
 
 
 
-def call_llm(prompt: str) -> str:
+def call_llm(prompt: str, model: str = "llama3.2:latest") -> str:
     """
     Calls the LLM with the given prompt and returns the response.
     """
@@ -58,7 +58,7 @@ def call_llm(prompt: str) -> str:
 
 
 def answer_question(question: str, top_k:int=3) -> dict:
-        """
+    """
     Full LLM answering pipeline:
     - retrieve relevant chunks
     - build RAG prompt
