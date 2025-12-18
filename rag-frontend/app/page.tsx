@@ -14,34 +14,43 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
 
   async function sendMessage() {
-    if (!input.trim()) return;
+    // if (!input.trim()) return;
+    const question = input.trim();
+    if (!question) return;
 
     // Add user message instantly
     const newMessages = [
       ...messages,
-      { role: "user" as const, content: input },
+      { role: "user" as const, content: question },
     ];
     setMessages(newMessages);
     setInput("");
     setLoading(true);
 
     // Call backend /ask endpoint
-    const res = await fetch("http://localhost:8000/ask?question=" + input, {
-      method: "POST",
-    });
+    try {
+      const res = await fetch(
+        "http://localhost:8000/ask?question=" + encodeURIComponent(question),
+        {
+          method: "POST",
+        }
+      );
 
-    const data = await res.json();
+      const data = await res.json();
 
-    // Add assistant reply
-    setMessages([
-      ...newMessages,
-      {
-        role: "assistant",
-        content: data.answer || "No answer received.",
-      },
-    ]);
-
-    setLoading(false);
+      // Add assistant reply
+      setMessages([
+        ...newMessages,
+        { role: "assistant", content: data.answer || "No answer received." },
+      ]);
+    } catch (error) {
+      setMessages([
+        ...newMessages,
+        { role: "assistant", content: "Error talking to backend." },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

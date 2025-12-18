@@ -7,15 +7,27 @@ from app.llm import answer_question
 from app.stt import transcribe_audio
 from app.llm import answer_question
 
+#fixing CORS issues
+
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-#---------------------------------ENDPOINTS---------------------------------
-#Get Endpoints
-#---------------------------------------------------------------------------
+#--------------------------------- ENDPOINTS ---------------------------------
+# Get Endpoints
+#-----------------------------------------------------------------------------
 
 #test endpoint
 @app.get("/test/pdf")

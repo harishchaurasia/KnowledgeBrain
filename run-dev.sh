@@ -42,8 +42,8 @@ start_backend() {
   (
     cd "$BACKEND_DIR"
     # If a local virtualenv exists, activate it; otherwise just run with current env
-    if [[ -f .venv/bin/activate ]]; then
-      source .venv/bin/activate
+    if [[ -f venv311/bin/activate ]]; then
+      source venv311/bin/activate
     fi
     "${BACKEND_CMD[@]}"
   ) &
